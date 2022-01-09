@@ -8,24 +8,12 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 const Expand = (props) => {
     console.log('expanded', props);
-    // const [data, setData] = useState([]);
-    // useEffect(() => {
-    // fetch(props.route)
-    //     .then(resp => resp.json())
-    //     .then(resp => {
-    //         console.log(resp);
-    //         setData(resp);
-    //     });
-    // }, [props.route]);
-    // if (data.length === 0) return <div>Loading...</div>;
-    // else return <div>{JSON.stringify(data)}</div>;
-
-    // return <div>Loading...</div>;
     return (
         <Container className = 'expanded'>
         <DataTable
             columns = {props.columns}
             data =  {props.data.expand}
+            onRowClicked = {props.onSelect}
         />
         <Container className='bg-container'>
         <ButtonGroup><IconContext.Provider value={{'color':'white'}}>{props.children}</IconContext.Provider></ButtonGroup>
@@ -90,10 +78,7 @@ export default function SQLTable(props) {
                 expandableRows
                 progressPending = {data.length === 0}
                 progressComponent = {<Container className='loading'><Spinner animation='border'/><br/>Connecting to server...</Container>}
-                // expandableRowsComponent={<Expand getRoute={props.onExpand}/>}
-                // expandableRowsComponent={({data}) => <Expand route={props.onExpand(data)}/>}
-                // expandableRowsComponent={Expand}
-                expandableRowsComponent={({data}) => <Expand columns={expandCols} data={data}>{props.children}</Expand>}
+                expandableRowsComponent={({data}) => <Expand columns={expandCols} data={data} onSelect={props.onExpandSelected}>{props.children}</Expand>}
                 expandableRowExpanded = {(row) =>{
                     if (props.preExpand !== undefined) {
                         setChecked(true); //TODO: this is a problem?

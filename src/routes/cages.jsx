@@ -2,20 +2,19 @@ import SQLTable, {ActionButton} from './sqltable';
 import {BiMinusCircle, BiPlusCircle } from 'react-icons/bi';
 import { GiExitDoor } from 'react-icons/gi';
 import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Cages(props) {
     const params = useParams();
+    const navigate = useNavigate();
+    const location = useLocation();
+
     return (
         <SQLTable
-            route='https://192.168.0.5:3001/cages'
+            route={`${process.env.REACT_APP_SERVER_ADDRESS}/cages`}
             
             preExpand={params.cage_number===undefined ? undefined : (row) => row.cage_number === params.cage_number}
-        // actions = {[
-        //     {'name':'Add animal', 'action': ()=>null, 'icon': <GrAddCircle/>},
-        //     {'name':'Remove animal', 'action': ()=>null, 'icon': <GrSubtractCircle/>},
-        //     {'name':'Change room', 'action': ()=>null, 'icon': <GiExitDoor/>},
-        // ]}
-        // onExpand={(row) => {console.log(row);return `https://192.168.0.5:3001/cage/${row.cage_number}`;}}
+            onExpandSelected={(row) => navigate(`/animals/${row.animal_id}`,{state: {from: location.pathname}})}
         >
             <ActionButton name='Add animal' action = {() => null} icon={<BiPlusCircle/>}/>
             <ActionButton name='Change room' action = {() => null} icon={<GiExitDoor/>}/>
@@ -23,3 +22,4 @@ export default function Cages(props) {
         </SQLTable>
         );
 };
+//navigate(`/cages/${res.text}`, {state: {from: location.pathname}});

@@ -3,7 +3,7 @@ import './App.css';
 import {Navbar, Button, Container, Row, Col} from 'react-bootstrap';
 import { MdQrCode } from 'react-icons/md';
 import {GiSeatedMouse, GiCage} from 'react-icons/gi';
-import {useNavigate, Link, Routes, Route} from 'react-router-dom';
+import {Link, Routes, Route} from 'react-router-dom';
 
 import Animals from './routes/animals';
 import Scanner from './routes/scanner';
@@ -17,11 +17,12 @@ function NavButton(props) {
 }
 
 export default function App() {
-  const navigate = useNavigate;  
   return (
     <div className="App">
       <Routes>
-        <Route path="animals" element={<Animals/>}/>
+        <Route path="animals" element={<Animals/>}>
+          <Route path=":animal_id" element ={<Animals />} />
+        </Route>
         <Route path="scanner" element={<Scanner/>}/>
         <Route path="cages" element={<Cages/>}>
           <Route path=":cage_number" element={<Cages/>}/>  

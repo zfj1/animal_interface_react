@@ -16,6 +16,7 @@ export default function Scanner() {
             if (res.text !== undefined) {
                 // set(res.text);
                 navigate(`/cages/${res.text}`, {state: {from: location.pathname}});
+                // TODO: should just navigate to /cages with cage as state
             }
         }}
       />
