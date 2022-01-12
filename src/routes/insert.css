@@ -1,0 +1,14 @@
+.input-date {
+    flex: 0 5 auto;
+}
+
+.input-group > button {
+    flex: 0 5 auto;
+    /* display: flex;
+    justify-content: center;
+    flex-direction: column; */
+}
+
+textarea {
+    resize: none;
+}

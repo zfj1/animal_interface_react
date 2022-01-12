@@ -1,7 +1,36 @@
 .navbar {
   text-align: center;
+  height: 4rem;
+  position: sticky;
+  bottom: 0;
 }
 
 .App {
   height: inherit;
+}
+
+.nav-link {
+  width:100%;
+  height:100%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  padding: 0 0;
+}
+
+.nav-button {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 5px 5px;
+  height: 100%;
+  max-width: 5rem;
+}
+
+.holder {
+  height: calc(100vh - 4rem);
+
 }
