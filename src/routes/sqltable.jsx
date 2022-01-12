@@ -1,15 +1,20 @@
 import './sqltable.css';
 
 import DataTable from 'react-data-table-component';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useRef} from 'react';
 import { ButtonGroup, Button, Container, Spinner}  from 'react-bootstrap';
 import { IconContext } from 'react-icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Expand = (props) => {
     console.log('expanded', props);
+    const ref = useRef(null);
+
+    useEffect(() => {
+        ref.current.scrollIntoView({block:'center'});
+    });
     return (
-        <Container className = 'expanded'>
+        <Container className = 'expanded' ref={ref}>
         <DataTable
             columns = {props.columns}
             data =  {props.data.expand}
@@ -70,26 +75,55 @@ export default function SQLTable(props) {
             navigate(path, {replace: true, state: {from: location.pathname, failed: true}});
         }
     },[props.preExpand, pre, checked]);
+    
+    const [expanded, setExpanded] = useState(undefined); //only allow 1 row to be expanded at a time
 
     return (
             <DataTable
-                columns={columns}
+                columns={columns}                
+                fixedHeader
+                fixedHeaderScrollHeight='calc(100vh - 4rem)'
                 data={data}
-                expandableRows
+                
                 progressPending = {data.length === 0}
-                progressComponent = {<Container className='loading'><Spinner animation='border'/><br/>Connecting to server...</Container>}
-                expandableRowsComponent={({data}) => <Expand columns={expandCols} data={data} onSelect={props.onExpandSelected}>{props.children}</Expand>}
+                progressComponent = {
+                    <Container className='holder'>
+                        <Container className='loading'>
+                            <Spinner animation='border'/>
+                            <br/>Connecting to server...
+                        </Container>
+                    </Container>
+                }
+                
+                expandableRows
+                expandOnRowClicked
+                expandableRowsHideExpander
+                expandableRowsComponent={
+                    props.expandComponent === undefined
+                        ? ({data}) => <Expand columns={expandCols} data={data} onSelect={props.onExpandSelected}>{props.children}</Expand>
+                        : props.expandComponent
+                }
                 expandableRowExpanded = {(row) =>{
-                    if (props.preExpand !== undefined) {
-                        setChecked(true); //TODO: this is a problem?
-                        if (props.preExpand(row)) {
-                            setPre(true);
-                            return true;
-                        } else {
-                            return false;
+                    // console.log(props.preExpand);
+                    if (expanded === undefined) {
+                        if (props.preExpand !== NaN && props.preExpand !== undefined) {
+                            setChecked(true); //TODO: this is a problem?
+                            if (row[props.primaryKey] === props.preExpand) {
+                                //we've validated the requested row
+                                setPre(true);
+                                setExpanded(props.preExpand);
+                                //scroll to this component, somehow?
+                            }
                         }
+                        return false;
+                    } else {
+                        if (row[props.primaryKey] === expanded) return true;
                     }
                 }}
+                onRowExpandToggled={(expanded, row) => {
+                    setExpanded(row[props.primaryKey]);
+                }}
+
             />
     );
 }
