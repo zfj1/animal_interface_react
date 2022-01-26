@@ -1,10 +1,18 @@
 import { Form, InputGroup, Card, Row, Col, DropdownButton, Dropdown, Button } from 'react-bootstrap';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './insert.css';
 
 export default function Insert() {
     // const navigate = useNavigate();
     // const location = useLocation();
+
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/events`)
+            .then(resp=>resp.json())
+            .then(resp => {
+                console.log(resp);
+        });
+    },[]);
     const [insertType, setInsertType] = useState('Animal event');
 
     return (
