@@ -32,7 +32,7 @@ export default function Dashboard() {
 
     // Compute total count dynamically
     const totalAnimals = filteredData.reduce((sum, strain) => sum + strain.count, 0);
-    const maxAnimals = totalAnimals; // Adjustable threshold
+    const maxAnimals = data.reduce((sum, strain) => sum + strain.count, 0); // Adjustable threshold
 
     // Compute male/female counts dynamically
     const totalMales = filteredData.reduce((sum, strain) => sum + strain.n_males, 0);
