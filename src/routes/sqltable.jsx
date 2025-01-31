@@ -38,12 +38,18 @@ export default function SQLTable(props) {
     const [data, setData] = useState([]);
     const [columns, setColumns] = useState([]);
     const [expandCols, setExpandCols] = useState([]);
+
+    //logic here to remove columns 
+    //data = data.filter(column => column !== 'male_id');
+    //expandCols = expandCols.filter(column => column !== 'male_id');
+    //columns = columns.filter(column => column !== 'male_id');
+
     useEffect(() => {
         fetch(props.route)
             .then(resp => resp.json())
             .then(resp => {
                 setColumns(resp.fields.reduce((cols, col) => {
-                    if(col==='expand') {
+                    if(col==='expand') {                    
                         // setExpandCols(Object.keys(resp.data[0].expand[0]).map((col) => {
                         //     return {name: col, selector: (e) => e[col]};
                         // }));
@@ -80,7 +86,7 @@ export default function SQLTable(props) {
 
     return (
             <DataTable
-                columns={columns}                
+                columns={columns}              
                 fixedHeader
                 fixedHeaderScrollHeight='calc(100vh - 4rem)'
                 data={data}
