@@ -100,8 +100,8 @@ export default function SQLTable(props) {
     const [expanded, setExpanded] = useState(undefined); //only allow 1 row to be expanded at a time
 
     const filteredData = data.filter(row => {
-        return Object.keys(filters).every(col => 
-            !filters[col] || row[col] === filters[col]
+        return Object.keys(filters).every(col =>
+            !filters[col] || String(row[col]).toLowerCase() === String(filters[col]).toLowerCase()
         );
     });
 
@@ -111,15 +111,25 @@ export default function SQLTable(props) {
                 <div style={{ display: 'flex', minWidth: '100%' }}>
                     {columns.map((col, index) => (
                         <div key={index} style={{ flex: 1, minWidth: '150px', marginRight: '5px' }}>
-                            <Form.Select 
-                                onChange={(e) => setFilters({...filters, [col.name]: e.target.value})} 
-                                defaultValue=""
-                                style={{ width: '100%' }}>
-                                <option value="">All {col.name}</option>
-                                {[...new Set(data.map(row => row[col.name]))].map((value, idx) => (
-                                    <option key={idx} value={value}>{value}</option>
-                                ))}
-                            </Form.Select>
+                            {col.name.toLowerCase().includes("id") ? (
+                                <Form.Control
+                                    type="text"
+                                    placeholder={`Enter ${col.name}`}
+                                    value={filters[col.name] || ""}
+                                    onChange={(e) => setFilters({ ...filters, [col.name]: e.target.value })}
+                                    style={{ width: '100%', fontSize: '12px' }}
+                                />
+                            ) : (
+                                <Form.Select
+                                    onChange={(e) => setFilters({ ...filters, [col.name]: e.target.value })}
+                                    defaultValue=""
+                                    style={{ width: '100%', fontSize: '12px' }}>
+                                    <option value="">All {col.name}</option>
+                                    {[...new Set(data.map(row => row[col.name]))].map((value, idx) => (
+                                        <option key={idx} value={value}>{value}</option>
+                                    ))}
+                                </Form.Select>
+                            )}
                         </div>
                     ))}
                 </div>
