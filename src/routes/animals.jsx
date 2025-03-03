@@ -160,6 +160,7 @@ export default function Animals() {
             });
         }}
     }}
+    hiddenColumns = {['source_id']}
     expandComponent = {Animal}//{({data}) => <Animal data={data}/>}
     >
     </SQLTable>

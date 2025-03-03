@@ -31,7 +31,7 @@ export function ActionButton(props) {
     return <Button key={props.name}>{props.icon}</Button>;
 }
 
-export default function SQLTable({columnOverrides = {}, ...props}) {
+export default function SQLTable({columnOverrides = {}, hiddenColumns = [], ...props}) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -78,9 +78,11 @@ export default function SQLTable({columnOverrides = {}, ...props}) {
     
     const [expanded, setExpanded] = useState(undefined); //only allow 1 row to be expanded at a time
 
-    const columnsFinal = columns.map((col) => ({
-        ...col,
-        ...(columnOverrides[col.name] || {}),
+    const columnsFinal = columns
+        .filter(col => !hiddenColumns.includes(col.name)) // Omit hidden columns
+        .map((col) => ({
+            ...col,
+            ...(columnOverrides[col.name] || {}),
     }));
 
     return (
