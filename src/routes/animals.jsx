@@ -13,21 +13,21 @@ import { useEffect, useRef, useState } from "react";
 const makeFeatureRow = (item) => {
     return (
         
-            <div key={item[0]} className='feature-wrapper'>
-                <div className='feature'>{item[0]}:</div>
-                <div className='feature-value'>
-                    <OverlayTrigger overlay={
-                        <Tooltip><img style={{minHeight:20, minWidth:20, backgroundColor:'red'}}/> Zach (09/14/21): for such and such reason</Tooltip>
-                    }>
-                        <Badge
-                            className='feature-badge'
-                            bg = {(item[1] === 'None' || item[1] === 'Unknown') ? 'secondary' : 'primary'}
-                        >
-                            {item[1]}
-                        </Badge>             
-                    </OverlayTrigger>     
-                    </div>
-            </div>                  
+        <div key={item[0]} className='feature-wrapper'>
+        <div className='feature'>{item[0]}:</div>
+        <div className='feature-value'>
+        <OverlayTrigger overlay={
+            <Tooltip><img style={{minHeight:20, minWidth:20, backgroundColor:'red'}}/> Zach (09/14/21): for such and such reason</Tooltip>
+        }>
+        <Badge
+        className='feature-badge'
+        bg = {(item[1] === 'None' || item[1] === 'Unknown') ? 'secondary' : 'primary'}
+        >
+        {item[1]}
+        </Badge>
+        </OverlayTrigger>
+        </div>
+        </div>
     )
 }
 
@@ -52,86 +52,86 @@ const Animal = (props) => {
         let formal_name = undefined;
         switch (event['event_type']) {
             case 'tag':
-                formal_name = 'Tagged';
-                if (features1[0][1] === 'None' && features1[1][1] === 'None' && event['extras']['tag_id'] !==null) {
-                    features1[0][1] = `${event['extras']['tag_id']} | ${event['extras']['tag_ear']}`;
-                    features1[1][1] = event['extras']['punch'];
-                }
-                break;
+            formal_name = 'Tagged';
+            if (features1[0][1] === 'None' && features1[1][1] === 'None' && event['extras']['tag_id'] !==null) {
+                features1[0][1] = `${event['extras']['tag_id']} | ${event['extras']['tag_ear']}`;
+                features1[1][1] = event['extras']['punch'];
+            }
+            break;
             case 'assign_cage':
-                formal_name = `Moved to cage ${event['extras']['cage_number']} (${event['extras']['room_number']})`;
-                if (features2[0][1] === 'None') {
-                    features2[0][1] = `${event['extras']['cage_number']} | ${event['extras']['room_number']}`;
-                }
-                break;
+            formal_name = `Moved to cage ${event['extras']['cage_number']} (${event['extras']['room_number']})`;
+            if (features2[0][1] === 'None') {
+                features2[0][1] = `${event['extras']['cage_number']} | ${event['extras']['room_number']}`;
+            }
+            break;
             case 'assign_protocol':
-                formal_name = `Assigned to the '${event['extras']['protocol_name']}' protocol`;
-                if (features2[1][1] === 'None') {
-                    features2[1][1] = event['extras']['protocol_name'];
-                    //TODO: abbreviate the name if it's too long?
-                }
-                break;
+            formal_name = `Assigned to the '${event['extras']['protocol_name']}' protocol`;
+            if (features2[1][1] === 'None') {
+                features2[1][1] = event['extras']['protocol_name'];
+                //TODO: abbreviate the name if it's too long?
+            }
+            break;
             case 'reserved_for_project':
-                formal_name = `Assigned to the '${event['extras']['project_name']}' project`;
-                if (features2[2][1] === 'None') {
-                    features2[2][1] = event['extras']['project_name'];
-                    //TODO: want to also parse breeding, set retired/behavior done/no event as 'available' ?
-                }
-                break;
+            formal_name = `Assigned to the '${event['extras']['project_name']}' project`;
+            if (features2[2][1] === 'None') {
+                features2[2][1] = event['extras']['project_name'];
+                //TODO: want to also parse breeding, set retired/behavior done/no event as 'available' ?
+            }
+            break;
             case 'reserved_for_session':
-                formal_name = `${event['extras']['rig_name']} experiment`;
-                if (features2[3][1] === 'None') {
-                    features2[3][1] = `${event['date'].substring(5,10)} | ${event['extras']['rig_name']}`;
-                    //TODO: if the date has already past, maybe we show it differently / not at all?
-                }
-                break;
+            formal_name = `${event['extras']['rig_name']} experiment`;
+            if (features2[3][1] === 'None') {
+                features2[3][1] = `${event['date'].substring(5,10)} | ${event['extras']['rig_name']}`;
+                //TODO: if the date has already past, maybe we show it differently / not at all?
+            }
+            break;
             default:
-                formal_name = event['event_type'];
+            formal_name = event['event_type'];
         }
         return (
             <ListGroup.Item key={i} style={{textOverflow:'ellipsis',overflow:'hidden',whiteSpace:'nowrap','backgroundColor':'#EEEEEE',lineHeight:'100%', fontSize:'.7rem'}}>
-                <img style={{minHeight:20, minWidth:20, backgroundColor:'red'}}/> {formal_name} on {event.date}
+            <img style={{minHeight:20, minWidth:20, backgroundColor:'red'}}/> {formal_name} on {event.date}
             </ListGroup.Item>
         );
 
     });
 
     return (
-    
-    <div className='expand-wrapper' ref={ref}>
-        <Card style={{flex: 1}}>
-            {/* <Card.Title>DJID {props.data.animal_id}</Card.Title> */}
-            <Card.Body>
-                <div className='expand-container'>
-                    <Image style={{flex: '5 1 auto', minHeight:'50px', minWidth:'100px', maxHeight:'6.3rem', maxWidth:'200px',backgroundColor:'#333333',margin:'0px 4px'}}/>
 
-                    <Col style={{flex: '1 6 15%', margin:'0px 4px'}}>
-                        {features1.map(makeFeatureRow)}
-                    </Col>
-                    <Col style={{flex: '1 6 10rem', minWidth:'10rem', margin:'0px 4px'}}>
-                        {features2.map(makeFeatureRow)}
-                    </Col>
-                    <Col style={{flex: '6 1 25%', minWidth: '12rem', maxHeight:'6.3rem', overflow: 'auto', margin:'0px 4px'}}>
-                        <ListGroup as="ul">
-                            {list_group}
-                        </ListGroup>
-                    </Col>
-                </div>
-            </Card.Body>
-            <Card.Footer>
-                <Container className='bg-container'>
-                    <ButtonGroup><IconContext.Provider value={{'color':'white',size:30}}>
-                        <Button><GiCage/></Button>
-                        <Button><AiOutlineTag/></Button>
-                        <Button><BsClipboardPlus/></Button>
-                        <Button><BsPerson/></Button>
-                        <Button><AiOutlineExperiment/></Button>
-                        <Button><BiBone/></Button>
-                    </IconContext.Provider></ButtonGroup>
-                </Container>
-            </Card.Footer>
+        <div className='expand-wrapper' ref={ref}>
+        <Card style={{flex: 1}}>
+        {/* <Card.Title>DJID {props.data.animal_id}</Card.Title> */}
+        <Card.Body>
+        <div className='expand-container'>
+        <Image style={{flex: '5 1 auto', minHeight:'50px', minWidth:'100px', maxHeight:'6.3rem', maxWidth:'200px',backgroundColor:'#333333',margin:'0px 4px'}}/>
+
+        <Col style={{flex: '1 6 15%', margin:'0px 4px'}}>
+        {features1.map(makeFeatureRow)}
+        </Col>
+        <Col style={{flex: '1 6 10rem', minWidth:'10rem', margin:'0px 4px'}}>
+        {features2.map(makeFeatureRow)}
+        </Col>
+        <Col style={{flex: '6 1 25%', minWidth: '12rem', maxHeight:'6.3rem', overflow: 'auto', margin:'0px 4px'}}>
+        <ListGroup as="ul">
+        {list_group}
+        </ListGroup>
+        </Col>
+        </div>
+        </Card.Body>
+        <Card.Footer>
+        <Container className='bg-container'>
+        <ButtonGroup><IconContext.Provider value={{'color':'white',size:30}}>
+        <Button><GiCage/></Button>
+        <Button><AiOutlineTag/></Button>
+        <Button><BsClipboardPlus/></Button>
+        <Button><BsPerson/></Button>
+        <Button><AiOutlineExperiment/></Button>
+        <Button><BiBone/></Button>
+        </IconContext.Provider></ButtonGroup>
+        </Container>
+        </Card.Footer>
         </Card>
-    </div>
+        </div>
     );
 }
 
@@ -140,10 +140,27 @@ export default function Animals() {
 
     const animal_id = parseInt(params.animal_id);
     return <SQLTable
-        route={`${process.env.REACT_APP_SERVER_ADDRESS}/animals`}
-        primaryKey = 'animal_id'
-        preExpand={animal_id}
-        expandComponent = {Animal}//{({data}) => <Animal data={data}/>}
+    route={`${process.env.REACT_APP_SERVER_ADDRESS}/animals`}
+    primaryKey = 'animal_id'
+    preExpand={animal_id}
+    columnOverrides={{
+        'strain_name': {cell: row => {
+            if (!row.strain_name) return;
+            let strains = row.strain_name.split(' x ');
+            return strains.map(strain => {
+                let bcolor = "gray";
+                let fcolor = "white"
+                let strain_name = strain.toLowerCase();
+                if (strain_name.includes("gfp")) bcolor = "green";
+                if (strain_name.includes("salsa")) {bcolor = "yellow"; fcolor="black";}
+                if (strain_name.includes("ai14")) bcolor = "orange";
+                if (strain_name.includes("ai32")) bcolor = "#9edceb";
+
+                return <Badge key={strain} bg="" style={{color: fcolor, backgroundColor: bcolor}}>{strain}</Badge>;
+            });
+        }}
+    }}
+    expandComponent = {Animal}//{({data}) => <Animal data={data}/>}
     >
     </SQLTable>
 };
@@ -163,8 +180,8 @@ const event_sorter = (a,b) => {
     }
     if (a['time'] !== null && b['time'] !== null) {
         let time = (parseInt(b['time'].substring(0,2)) - parseInt(a['time'].substring(0,2))) * 3600 +
-            (parseInt(b['time'].substring(3,5)) - parseInt(a['time'].substring(3,5))) * 60 +
-            (parseInt(b['time'].substring(6,8)) - parseInt(a['time'].substring(6,8)));
+        (parseInt(b['time'].substring(3,5)) - parseInt(a['time'].substring(3,5))) * 60 +
+        (parseInt(b['time'].substring(6,8)) - parseInt(a['time'].substring(6,8)));
         if (time !== 0) {
             return time;
         }
@@ -183,8 +200,8 @@ const event_sorter = (a,b) => {
     }
 
     let entry_time = (parseInt(b['entry_time'].substring(11,13)) - parseInt(a['entry_time'].substring(11,13))) * 3600 +
-        (parseInt(b['entry_time'].substring(14,16)) - parseInt(a['entry_time'].substring(14,16))) * 60 +
-        (parseInt(b['entry_time'].substring(17,19)) - parseInt(a['entry_time'].substring(17,19)));
+    (parseInt(b['entry_time'].substring(14,16)) - parseInt(a['entry_time'].substring(14,16))) * 60 +
+    (parseInt(b['entry_time'].substring(17,19)) - parseInt(a['entry_time'].substring(17,19)));
     
     return entry_time;
 };

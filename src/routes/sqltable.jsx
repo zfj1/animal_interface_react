@@ -2,7 +2,7 @@ import './sqltable.css';
 
 import DataTable from 'react-data-table-component';
 import {useEffect, useState, useRef} from 'react';
-import { ButtonGroup, Button, Container, Spinner}  from 'react-bootstrap';
+import { ButtonGroup, Button, Container, Spinner, Badge}  from 'react-bootstrap';
 import { IconContext } from 'react-icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -31,7 +31,7 @@ export function ActionButton(props) {
     return <Button key={props.name}>{props.icon}</Button>;
 }
 
-export default function SQLTable(props) {
+export default function SQLTable({columnOverrides = {}, ...props}) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -78,9 +78,14 @@ export default function SQLTable(props) {
     
     const [expanded, setExpanded] = useState(undefined); //only allow 1 row to be expanded at a time
 
+    const columnsFinal = columns.map((col) => ({
+        ...col,
+        ...(columnOverrides[col.name] || {}),
+    }));
+
     return (
             <DataTable
-                columns={columns}                
+                columns={columnsFinal}
                 fixedHeader
                 fixedHeaderScrollHeight='calc(100vh - 4rem)'
                 data={data}
