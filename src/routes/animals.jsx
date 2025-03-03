@@ -12,24 +12,33 @@ import { useEffect, useRef, useState } from "react";
 
 const makeFeatureRow = (item) => {
     return (
-        
-        <div key={item[0]} className='feature-wrapper'>
-        <div className='feature'>{item[0]}:</div>
-        <div className='feature-value'>
-        <OverlayTrigger overlay={
-            <Tooltip><img style={{minHeight:20, minWidth:20, backgroundColor:'red'}}/> Zach (09/14/21): for such and such reason</Tooltip>
-        }>
-        <Badge
-        className='feature-badge'
-        bg = {(item[1] === 'None' || item[1] === 'Unknown') ? 'secondary' : 'primary'}
-        >
-        {item[1]}
-        </Badge>
-        </OverlayTrigger>
-        </div>
-        </div>
+
+            <div key={item[0]} className='feature-wrapper'>
+                <div className='feature'>{item[0]}:</div>
+                <div className='feature-value'>
+                    <OverlayTrigger overlay={
+                        <Tooltip><img style={{minHeight:20, minWidth:20, backgroundColor:'red'}}/> Zach (09/14/21): for such and such reason</Tooltip>
+                    }>
+                        <Badge
+                            className='feature-badge'
+                            bg = {(item[1] === 'None' || item[1] === 'Unknown') ? 'secondary' : 'primary'}
+                        >
+                            {item[1]}
+                        </Badge>             
+                    </OverlayTrigger>     
+                    </div>
+            </div>                  
     )
-}
+};
+
+function diff_weeks(dt2, dt1){
+  // Calculate the difference in milliseconds between dt2 and dt1
+  let diff =(dt2.getTime() - dt1.getTime()) / 1000;
+  // Convert the difference from milliseconds to weeks by dividing it by the number of milliseconds in a week
+  diff /= (60 * 60 * 24 * 7);
+  // Return the absolute value of the rounded difference as the result
+  return Math.abs(Math.round(diff));
+};
 
 const Animal = (props) => {
     // console.log(props.data);
@@ -43,8 +52,22 @@ const Animal = (props) => {
         }
     }, []);
 
-    let features1 = [['Tag','None'],['Punch','None'],['Mother','Unknown'],['Father','Unknown']];
-    let features2 = [['Cage','None'],['Protocol','None'],['Project','None'],['Session','None']];
+    const today = new Date();
+    const birth_date = new Date(props.data.dob)
+    let source_name = '';
+
+    if (props.data.source_id < 90){//Vendor
+        source_name = 'Vendor: ' + props.data.source_id;
+    }        
+    else if (props.data.source_id < 1000){
+        source_name = 'Collaborator: ' + props.data.source_id;
+    } //Collaborator
+    else {
+        source_name = 'Breeder: ' + props.data.source_id;
+    } //Breeder
+    
+    let features1 = [['Tag','None'],['Punch','None'],['Source', source_name],['Mother',props.data.female_id],['Father',props.data.male_id]];
+    let features2 = [['Age (wks)', diff_weeks(today,birth_date )],['Cage','None'],['Protocol','None'],['Project','None'],['Session','None']];
 
     //sort events by date (because can't in mysql with json...)
     props.data.expand.sort(event_sorter);

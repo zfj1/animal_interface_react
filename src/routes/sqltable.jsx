@@ -43,7 +43,7 @@ export default function SQLTable({columnOverrides = {}, hiddenColumns = [], ...p
             .then(resp => resp.json())
             .then(resp => {
                 setColumns(resp.fields.reduce((cols, col) => {
-                    if(col==='expand') {
+                    if(col==='expand') {                    
                         // setExpandCols(Object.keys(resp.data[0].expand[0]).map((col) => {
                         //     return {name: col, selector: (e) => e[col]};
                         // }));
