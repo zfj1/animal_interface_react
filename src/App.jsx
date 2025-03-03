@@ -8,6 +8,7 @@ import {GiSeatedMouse, GiCage} from 'react-icons/gi';
 import {Link, Routes, Route} from 'react-router-dom';
 
 import Animals from './routes/animals';
+import Breeders from './routes/breeders';
 import Scanner from './routes/scanner';
 import Cages from './routes/cages';
 import Insert from './routes/insert';
@@ -26,6 +27,9 @@ export default function App() {
         <Route path="animals" element={<Animals/>}>
           <Route path=":animal_id" element ={<Animals />} />
         </Route>
+        <Route path="breeders" element={<Breeders/>}>
+          <Route path=":breeder_id" element ={<Breeders />} />
+        </Route>
         <Route path="scanner" element={<Scanner/>}/>
         <Route path="insert" element={<Insert/>}/>
         <Route path="cages" element={<Cages/>}>
@@ -37,6 +41,7 @@ export default function App() {
           <Container><Row>
             <IconContext.Provider value={{size:40}}>
               <NavButton route="/animals" icon={<GiSeatedMouse/>}/>
+              <NavButton route="/breeders" icon={<GiSeatedMouse/>}/>
               <NavButton route="/scanner" icon={<MdQrCode/>}/>
               <NavButton route="/insert" icon={<AiOutlinePlusCircle/>}/>
               <NavButton route="/cages" icon={<GiCage/>}/>

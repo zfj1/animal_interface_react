@@ -1,0 +1,51 @@
+.feature-value {
+    text-align: right;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0rem 2px;
+}
+
+.feature-badge {
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.feature {
+    flex: 0 0 auto;
+    margin: 0rem 2px;
+}
+
+.feature-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-content: space-between;
+    width: 100%;
+    margin: 0rem -4px;
+}
+
+.expand-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: -2px;
+    row-gap: 10px;
+}
+
+.card-body {
+    padding: .5rem .5rem;
+}
+
+.btn {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 5px 5px;
+    /* max-width: 2rem; */
+  }

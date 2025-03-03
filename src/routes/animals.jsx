@@ -66,7 +66,6 @@ const Animal = (props) => {
         source_name = 'Breeder: ' + props.data.source_id;
     } //Breeder
     
-
     let features1 = [['Tag','None'],['Punch','None'],['Source', source_name],['Mother',props.data.female_id],['Father',props.data.male_id]];
     let features2 = [['Age (wks)', diff_weeks(today,birth_date )],['Cage','None'],['Protocol','None'],['Project','None'],['Session','None']];
 
