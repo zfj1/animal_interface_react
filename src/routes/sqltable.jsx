@@ -48,7 +48,7 @@ export default function SQLTable({columnOverrides = {}, hiddenColumns = [], ...p
         .then(resp => {
             // resp contains 'fields', a list of column names, and 'data', a list of rows
             const newColumns = resp.fields
-            .filter(col => !hiddenColumns.includes(col.name))
+            .filter(col => !hiddenColumns.includes(col))
             .map((col) => {
                 if (col === 'expand') { // for data only visible when a row is selected
                     let keys = Object.keys(resp.data[0].expand[0]).filter(c => c !== 'extras')
