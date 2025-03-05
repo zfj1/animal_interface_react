@@ -106,7 +106,7 @@ export default function Insert() {
                         </Row>
                         <Form.Group>
                             <Form.Label>Notes</Form.Label>
-                            <Form.Control as="textarea" rows={5}/>
+                            <Form.Control as="textarea" rows={5} maxLength={256}/>
                         </Form.Group>
 
                         {/* event-specific entries */}
@@ -118,11 +118,20 @@ export default function Insert() {
                                         return <Form.Check type='radio' id={id} key={id} name={toSnakeCase(eventType)} label={opt.slice(1,-1)}/>;
                                     });
                                 } else if (field.type.includes('int unsigned')) {
-                                    group = <Form.Control/>;
+                                    group = <Form.Control key = {field.field} type='number' min={0} step={1}/>;
+                                } else if (field.type.includes('int')) {
+                                    group = <Form.Control key = {field.field} type='number' step={1}/>;
+                                } else if (field.type.includes('float')) {
+                                    group = <Form.Control key = {field.field} type='number' step='any'/>;
+                                } else if (field.type.startsWith('varchar(')) {
+                                    const nchars = parseInt(field.type.slice(8, -1), 10);
+                                    group = <Form.Control key = {field.field} type='text' maxLength={nchars}/>;
+                                } else if (field.type.includes('blob')) {
+                                    group = <Form.Control key = {field.field} type='text'/>;
                                 }
 
                                 return (<Form.Group>
-                                    <Form.Label key={field.field}>{toTitleCase(field.field)}</Form.Label>
+                                    <Form.Label key={field.field + '-label'}>{toTitleCase(field.field)}</Form.Label>
                                     {group}
                                 </Form.Group>
                             )})}
