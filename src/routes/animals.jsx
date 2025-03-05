@@ -163,7 +163,7 @@ export default function Animals() {
 
     const animal_id = parseInt(params.animal_id);
     return <SQLTable
-    route={`${process.env.REACT_APP_SERVER_ADDRESS}/animals`}
+    route={`${process.env.REACT_APP_SERVER_ADDRESS}/data/animals`}
     primaryKey = 'animal_id'
     preExpand={animal_id}
     columnOverrides={{

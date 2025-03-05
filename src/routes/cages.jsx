@@ -11,7 +11,7 @@ export default function Cages(props) {
 
     return (
         <SQLTable
-            route={`${process.env.REACT_APP_SERVER_ADDRESS}/cages`}
+            route={`${process.env.REACT_APP_SERVER_ADDRESS}/data/cages`}
             primaryKey = 'cage_number'
             preExpand= {params.cage_number}
             onExpandSelected={(row) => navigate(`/animals/${row.animal_id}`,{state: {from: location.pathname}})}

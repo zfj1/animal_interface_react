@@ -2,18 +2,44 @@ import { Form, InputGroup, Card, Row, Col, DropdownButton, Dropdown, Button } fr
 import { useState, useEffect } from 'react';
 import './insert.css';
 
+function toTitleCase(snakeCase) {
+    const words = snakeCase.split('_');
+    const title = words.map(word => {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    });
+    return title.join(' ');
+}
+
+function toSnakeCase(titleCase) {
+    const words = titleCase.split(' ');
+    const snake = words.map(word => {
+        return word.toLowerCase()
+    });
+    return snake.join('_');
+}
+
+
 export default function Insert() {
     // const navigate = useNavigate();
     // const location = useLocation();
+    const [eventData, setEventData] = useState([]);
+    const [eventType, setEventType] = useState('');
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/events`)
+        fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/data/events`)
             .then(resp=>resp.json())
             .then(resp => {
                 console.log(resp);
+                setEventData(resp.data);
+                setEventType(toTitleCase(resp.data[0].event_type))
         });
     },[]);
+
     const [insertType, setInsertType] = useState('Animal event');
+
+    const currFields = ((eventData.filter(event => {
+        return event.event_type === toSnakeCase(eventType);
+    })[0] || {}).fields || []);
 
     return (
             <div className='holder'>
@@ -32,18 +58,16 @@ export default function Insert() {
                                 <option>Behavior experiment type</option>
                             </Form.Select>
                         </Form.Group>
-                        {/* Following will need to be refactored out... just here to get the creative juices flowing */}
+                        {/* following should be conditional on animal event */}
                         <Form.Group as={Col}>
                             <Form.Label>Event type</Form.Label>
-                            <Form.Select>
-                                <option>Assign cage</option>
-                                <option>Tag</option>
-                                <option>Genotype</option>
-                                <option>Social behavior session</option>
+                            <Form.Select onChange={(e) => setEventType(e.target.value)} value={eventType}>
+                                {eventData.map(event => {
+                                    return <option key={event.event_type}>{toTitleCase(event.event_type)}</option>
+                                })}
                             </Form.Select>
                         </Form.Group>
                         <Row>
-                            
                             <Form.Group as={Col}>
                                 <Form.Label>Animal</Form.Label>
                                 <InputGroup>
@@ -63,7 +87,7 @@ export default function Insert() {
                                 <Form.Label>Date</Form.Label>
                                 <InputGroup>
                                     {/* <Button className='input-btn' variant='outline-secondary'>today</Button> */}
-                                    <DropdownButton variant='outline-secondary'>
+                                    <DropdownButton variant='outline-secondary' title=''>
                                         <Dropdown.Item>Today</Dropdown.Item>
                                         <Dropdown.Item>Yesterday</Dropdown.Item>
                                         <Dropdown.Item>Tomorrow</Dropdown.Item>                                    
@@ -84,6 +108,24 @@ export default function Insert() {
                             <Form.Label>Notes</Form.Label>
                             <Form.Control as="textarea" rows={5}/>
                         </Form.Group>
+
+                        {/* event-specific entries */}
+                            {currFields.filter(field => field.field !== 'event_id').map(field => {
+                                let group = null;
+                                if (field.type.startsWith('enum(')) {
+                                    group = field.type.slice(5,-1).split(',').map(opt => {
+                                        let id = toSnakeCase(eventType) + '-' + opt.slice(1,-1);
+                                        return <Form.Check type='radio' id={id} key={id} name={toSnakeCase(eventType)} label={opt.slice(1,-1)}/>;
+                                    });
+                                } else if (field.type.includes('int unsigned')) {
+                                    group = <Form.Control/>;
+                                }
+
+                                return (<Form.Group>
+                                    <Form.Label key={field.field}>{toTitleCase(field.field)}</Form.Label>
+                                    {group}
+                                </Form.Group>
+                            )})}
                     </Form>
                     <Card.Footer>
                         <Button type="submit" className="float-end">Submit</Button>

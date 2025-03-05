@@ -15,7 +15,7 @@ export default function Breeders() {
 
     const source_id = parseInt(params.source_id);
     return <SQLTable
-        route={`${process.env.REACT_APP_SERVER_ADDRESS}/breeders`}
+        route={`${process.env.REACT_APP_SERVER_ADDRESS}/data/breeders`}
         primaryKey = 'source_id'
     >
     </SQLTable>
