@@ -46,23 +46,28 @@ export default function SQLTable({columnOverrides = {}, hiddenColumns = [], ...p
         fetch(props.route)
         .then(resp => resp.json())
         .then(resp => {
-            // resp contains 'fields', a list of column names, and 'data', a list of rows
-            const newColumns = resp.fields
-            .filter(col => !hiddenColumns.includes(col))
-            .map((col) => {
-                if (col === 'expand') { // for data only visible when a row is selected
+            // resp contains 'fields', a list of column names; 'types', a list of column types; and 'data', a list of rows
+            const newColumns = resp.fields.map((field, i) => {
+                return {'name':field, 'type':resp.types[i]};
+            })
+            .filter(col => !hiddenColumns.includes(col.name))
+            .map(col => {
+                if (col.name === 'expand') { // for data only visible when a row is selected
                     let keys = Object.keys(resp.data[0].expand[0]).filter(c => c !== 'extras')
                     .map((c) => ({ name: c, selector: (e) => e[c], sortable: true }));
                     setExpandCols(keys);
                     return null;
                 } else {
                     return {
-                        name: col,
-                        selector: (e) => e[col],
+                        name: col.name,
+                        selector: (e) => e[col.name],
                         sortable: true,
                         grow: 1,
                         right: true,
-                        ...(columnOverrides[col] || {}), // overrides the above defaults with settings from the parent element
+                        type: col.type,
+                        filter: (row, match) => String(row || "").toLowerCase().includes(match),
+                        // filter: (row, match) => {console.log('filtering!', row, match); return true;},
+                        ...(columnOverrides[col.name] || {}), // overrides the above defaults with settings from the parent element
                     };
                 }
             }).filter(Boolean); // removes null columns (for expand)
@@ -99,34 +104,31 @@ export default function SQLTable({columnOverrides = {}, hiddenColumns = [], ...p
     },[props.preExpand, pre, checked]);
     
     const [expanded, setExpanded] = useState(undefined); //only allow 1 row to be expanded at a time
-
     const filteredData = data.filter(row => {
-        return Object.keys(filters).every(col =>
-            !filters[col] || String(row[col]).toLowerCase() === String(filters[col]).toLowerCase()
-        );
+        return Object.keys(filters).every((col) => {
+            return !filters[col] || !columns[col] || columns[col].filter(row[columns[col].name], String(filters[col]).toLowerCase());
+        });
         // goes through each row; checks the columns that are being filtered;
         // if there is no filter, the row is kept
         // if there is a filter, keeps the data only if it matches the filter
-        // TODO: perhaps we should use string includes? rather than strictly equals
     });
-
     return (
         <Container style={{ overflowX: 'auto' }}>
         <div style={{ overflowX: 'auto' }} ref={filterContainerRef}>
         <div style={{ display: 'flex', minWidth: '100%' }}>
         {columns.map((col, index) => (
             <div key={index} style={{ flex: 1, minWidth: '150px', marginRight: '5px' }}>
-            {col.name.toLowerCase().includes("id") ? (
+            {col.type.includes("LONG") ? (
                 <Form.Control
-                type="text"
+                type="number"
                 placeholder={`Enter ${col.name}`}
-                value={filters[col.name] || ""}
-                onChange={(e) => setFilters({ ...filters, [col.name]: e.target.value })}
+                value={filters[col.name] || null}
+                onChange={(e) => setFilters({ ...filters, [index]: e.target.value })}
                 style={{ width: '100%', fontSize: '12px' }}
                 />
             ) : (
                 <Form.Select
-                onChange={(e) => setFilters({ ...filters, [col.name]: e.target.value })}
+                onChange={(e) => setFilters({ ...filters, [index]: e.target.value })}
                 defaultValue=""
                 style={{ width: '100%', fontSize: '12px' }}>
                 <option value="">All {col.name}</option>

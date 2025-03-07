@@ -53,7 +53,7 @@ const Animal = (props) => {
     }, []);
 
     const today = new Date();
-    const birth_date = new Date(props.data.dob)
+    const birth_date = new Date(props.data.dob);
     let source_name = '';
 
     if (props.data.source_id < 90){//Vendor
@@ -159,6 +159,8 @@ const Animal = (props) => {
 }
 
 export default function Animals() {
+
+    const today = new Date();
     const params = useParams();
 
     const animal_id = parseInt(params.animal_id);
@@ -167,6 +169,14 @@ export default function Animals() {
     primaryKey = 'animal_id'
     preExpand={animal_id}
     columnOverrides={{
+        'dob': {
+            cell: row => {
+                if (row.dob === null) return null;
+                return parseInt(diff_weeks(today, new Date(row.dob)));
+            },
+            name: 'age',
+            type: 'LONG',
+        },
         'strain_name': {cell: row => {
             if (!row.strain_name) return;
             let strains = row.strain_name.split(' x ');
@@ -183,7 +193,7 @@ export default function Animals() {
             });
         }}
     }}
-    hiddenColumns = {['source_id']}
+    hiddenColumns = {['source_id','male_id','female_id']}
     expandComponent = {Animal}//{({data}) => <Animal data={data}/>}
     >
     </SQLTable>
